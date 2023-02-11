@@ -1,5 +1,7 @@
 const http = require('http');
 const express = require('express');
+var AsyncLock = require('async-lock');
+var lock = new AsyncLock();
 
 const hostname = '127.0.0.1';
 
@@ -23,8 +25,13 @@ const getLikes = num => (req,res)=>{
 
 const updateLikes = num => (req,res)=>{
   console.log('increment');
-  likes += 1;
-  
+  lock.acquire(key, function(done) {
+    console.log('Should never print duplicate like count!', ' - likes: ', likes);
+    likes += 1;
+  }, function(err, ret) {
+    // lock released
+    console.log('lock released!')
+  }, opts);
   console.log(`response from server number ${num}`)
   res.status(200).send({ success: 'true' })
   return;
