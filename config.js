@@ -19,7 +19,7 @@ const handler = async (req, res) =>{
 
 	const server = servers[current];
 
-    // Round robin LB
+    // TODO Round robin LB
     current === (servers.length-1)? current = 0 : current++
 
 	try{
