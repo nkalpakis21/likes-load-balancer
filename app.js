@@ -18,22 +18,20 @@ app2.use(express.json())
 let likes = 0;
 
 const getLikes = num => (req,res)=>{
-  console.log(`response from server number ${num}`)
   res.status(200).send({ likes })
   return;
 }
 
 const updateLikes = num => (req,res)=>{
-  console.log('increment');
-  lock.acquire(key, function(done) {
+  lock.acquire('some-key', function(done) {
     console.log('Should never print duplicate like count!', ' - likes: ', likes);
     likes += 1;
+    done();
   }, function(err, ret) {
     // lock released
-    console.log('lock released!')
-  }, opts);
-  console.log(`response from server number ${num}`)
-  res.status(200).send({ success: 'true' })
+    console.log(`Lock released!!!!`, {num})
+    res.status(200).send({ success: 'true' })
+  });
   return;
 }
 
