@@ -3,10 +3,13 @@ const path = require('path');
 const app = express();
 const axios = require('axios');
 
+const cors = require("cors");
+app.use(cors({ origin : '*'}))
+
 // Application servers
 const servers = [
-	"http://localhost:3003",
-	"http://localhost:3004"
+	"http://127.0.0.1:3003",
+	"http://127.0.0.1:3004"
 ]
 
 // Track the current application server to send request
@@ -39,7 +42,7 @@ const handler = async (req, res) =>{
 	}
 	catch(err){
 		// Send back the error message
-		res.status(500).send("Server error!")	
+		res.status(500).send(err)	
 	}
 }
 
