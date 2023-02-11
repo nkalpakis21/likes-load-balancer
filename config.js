@@ -6,47 +6,37 @@ const axios = require('axios');
 const cors = require("cors");
 app.use(cors({ origin : '*'}))
 
-// Application servers
 const servers = [
 	"http://127.0.0.1:3003",
 	"http://127.0.0.1:3004"
 ]
 
-// Track the current application server to send request
 let current = 0;
 
-// Receive new request
-// Forward to application server
 const handler = async (req, res) =>{
 
-	// Destructure following properties from request object
 	const { method, url, headers, body } = req;
 
-	// Select the current server to forward the request
 	const server = servers[current];
 
-	// Update track to select next server
-	current === (servers.length-1)? current = 0 : current++
+    // Round robin LB
+    current === (servers.length-1)? current = 0 : current++
 
 	try{
-		// Requesting to underlying application server
 		const response = await axios({
 			url: `${server}${url}`,
 			method: method,
 			headers: headers,
 			data: body
 		});
-		// Send back the response data
-		// from application server to client
+
 		res.send(response.data)
 	}
 	catch(err){
-		// Send back the error message
 		res.status(500).send(err)	
 	}
 }
 
-// Serve favicon.ico image
 app.get('/favicon.ico', (req, res
 	) => res.sendFile('/favicon.ico'));
 
